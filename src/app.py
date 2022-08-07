@@ -38,7 +38,7 @@ class App:
 
     def on_loop(self):
         current_time = time.time_ns()
-        dt = (self.prev_time - current_time) / 1_000_000_000
+        dt = (current_time - self.prev_time) / 1_000_000_000
         self.prev_time = current_time
 
         self.sprites["player"].player_loop(dt)

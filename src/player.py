@@ -1,5 +1,7 @@
 from src.sprite import Sprite
+from src.data_structures.body_1d import Body1D
 import pygame
+from math import atan, pi
 
 
 class Player(Sprite):
@@ -10,24 +12,52 @@ class Player(Sprite):
         self.bounds = self.surface.get_size()
         self.bounds = ((self.icon.get_size()[0]/2, self.bounds[0]-self.icon.get_size()[0]/2),
                        (self.icon.get_size()[1]/2, self.bounds[1]-self.icon.get_size()[1]/2))
-        self.speed = 400
+        self.x_velocity = 400
+        self.y_body = Body1D(self.position.y, gravity=1200)
+        self.rotation_angle = 0
 
     def player_loop(self, dt: float):
-        self.position.x += self.speed * dt * self.direction
-        self.direction *= -1 if False in self.check_bounds() else 1
+        self.position.x += self.x_velocity * dt * self.direction
+        if False in self.check_bounds_x():
+            self.direction *= -1
+            self.icon = pygame.transform.flip(self.icon, flip_x=True, flip_y=False)
 
-    def check_bounds(self):
-        result = [True] * 4
+        self.position.y = self.y_body.time_step(dt)
+        y_bounds_check = self.check_bounds_y()
+        if False in y_bounds_check:
+            self.y_body.velocity = -self.y_body.velocity
+            self.y_body.position = self.position.y
+
+        self.rotation_angle = atan(self.y_body.velocity / self.x_velocity) / pi * 180 * self.direction * -1
+        print(self.rotation_angle)
+
+    def check_bounds_x(self):
+        result = [True] * 2
         if self.position.x < self.bounds[0][0]:
             self.position.x = self.bounds[0][0]
             result[0] = False
         elif self.position.x > self.bounds[0][1]:
             self.position.x = self.bounds[0][1]
             result[1] = False
+        return result
+
+    def check_bounds_y(self):
+        result = [True] * 2
         if self.position.y < self.bounds[1][0]:
             self.position.y = self.bounds[1][0]
-            result[2] = False
+            result[0] = False
         elif self.position.y > self.bounds[1][1]:
             self.position.y = self.bounds[1][1]
-            result[3] = False
+            result[1] = False
         return result
+
+    def check_bounds(self):
+        return self.check_bounds_x(), self.check_bounds_y()
+
+    def set_position(self, pos):
+        super().set_position(pos)
+
+    def render(self):
+        self.surface.blit(pygame.transform.rotate(self.icon, self.rotation_angle),
+                          (self.position.x + self._render_offset[0], self.position.y + self._render_offset[1]))
+
