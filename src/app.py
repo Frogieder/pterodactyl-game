@@ -1,7 +1,6 @@
 import pygame
 # from pygame.locals import *
 from src.player import Player
-import time
 
 
 class App:
@@ -9,17 +8,18 @@ class App:
         self.sprites = {}
         self._running = True
         self.size = self.width, self.height = 1280, 800
-        self.prev_time = time.time_ns()
 
+    # noinspection PyAttributeOutsideInit
     def on_init(self) -> bool:
         pygame.init()
         # create window
-        # noinspection PyAttributeOutsideInit
         self._display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         pygame.display.set_caption("Pterodaktyln't")
         # set icon
         icon = pygame.image.load("assets/pterodactyl_icon_large.png")
         pygame.display.set_icon(icon)
+
+        self.clock = pygame.time.Clock()
 
         # create sprites
         self.sprites["player"] = Player(
@@ -27,7 +27,7 @@ class App:
             position=(self.width / 2, self.height / 2),
             icon_name="pterodactyl.png", size=(50, 50), anchor="c"
         )
-        
+
         # init done
         self._running = True
         return True
@@ -37,10 +37,8 @@ class App:
             self._running = False
 
     def on_loop(self):
-        current_time = time.time_ns()
-        dt = (current_time - self.prev_time) / 1_000_000_000
-        self.prev_time = current_time
-
+        dt = self.clock.tick(60) / 1000
+        print(dt)
         self.sprites["player"].player_loop(dt)
 
     def on_render(self):
