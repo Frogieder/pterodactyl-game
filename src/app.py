@@ -6,11 +6,8 @@ from src.player import Player
 class App:
     def __init__(self):
         self.sprites = {}
-        self._running = True
         self.size = self.width, self.height = 1280, 800
 
-    # noinspection PyAttributeOutsideInit
-    def on_init(self) -> bool:
         pygame.init()
         # create window
         self._display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
@@ -31,7 +28,6 @@ class App:
 
         # init done
         self._running = True
-        return True
 
     def on_event(self, event):
         # print(event)
@@ -69,9 +65,6 @@ class App:
         self.sprites["player"].set_position((100, 200))
 
     def on_execute(self):
-        if not self.on_init():
-            self._running = False
-
         while self._running:
             for event in pygame.event.get():
                 self.on_event(event)
