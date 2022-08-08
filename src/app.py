@@ -19,31 +19,37 @@ class App:
         icon = pygame.image.load("assets/pterodactyl_icon_large.png")
         pygame.display.set_icon(icon)
 
-        self.clock = pygame.time.Clock()
-
         # create sprites
         self.sprites["player"] = Player(
             surface=self._display_surf,
             position=(self.width / 2, self.height / 2),
             icon_name="pterodactyl.png", size=(50, 50), anchor="c"
         )
+        # other definitions
+        self.clock = pygame.time.Clock()
+        self.fps_counter = pygame.font.Font("assets/RobotoCondensed-Italic.ttf", 48)
 
         # init done
         self._running = True
         return True
 
     def on_event(self, event):
+        # print(event)
+        if event.type == pygame.KEYDOWN:
+            self.sprites["player"].y_body.velocity = -1000
         if event.type == pygame.QUIT:
             self._running = False
 
     def on_loop(self):
         dt = self.clock.tick(60) / 1000
-        print(dt)
         self.sprites["player"].player_loop(dt)
 
     def on_render(self):
         self._display_surf.fill((0, 255, 0))
-
+        self._display_surf.blit(
+            self.fps_counter.render(f"{self.clock.get_fps():.0f} FPS", True, (255, 255, 255)),
+            (0, 0)
+        )
         self.render_sprites()
 
         pygame.display.update()

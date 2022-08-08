@@ -23,31 +23,34 @@ class Player(Sprite):
             self.icon = pygame.transform.flip(self.icon, flip_x=True, flip_y=False)
 
         self.position.y = self.y_body.time_step(dt)
-        y_bounds_check = self.check_bounds_y()
+        y_bounds_check = self.check_bounds_y(True)
         if False in y_bounds_check:
             self.y_body.velocity = -self.y_body.velocity
             self.y_body.position = self.position.y
 
         self.rotation_angle = atan(self.y_body.velocity / self.x_velocity) / pi * 180 * self.direction * -1
-        print(self.rotation_angle)
 
-    def check_bounds_x(self):
+    def check_bounds_x(self, fix_pos: bool = False):
         result = [True] * 2
         if self.position.x < self.bounds[0][0]:
-            self.position.x = self.bounds[0][0]
+            if fix_pos:
+                self.position.x = self.bounds[0][0]
             result[0] = False
         elif self.position.x > self.bounds[0][1]:
-            self.position.x = self.bounds[0][1]
+            if fix_pos:
+                self.position.x = self.bounds[0][1]
             result[1] = False
         return result
 
-    def check_bounds_y(self):
+    def check_bounds_y(self, fix_pos: bool = False):
         result = [True] * 2
         if self.position.y < self.bounds[1][0]:
-            self.position.y = self.bounds[1][0]
+            if fix_pos:
+                self.position.y = self.bounds[1][0]
             result[0] = False
         elif self.position.y > self.bounds[1][1]:
-            self.position.y = self.bounds[1][1]
+            if fix_pos:
+                self.position.y = self.bounds[1][1]
             result[1] = False
         return result
 
@@ -60,4 +63,3 @@ class Player(Sprite):
     def render(self):
         self.surface.blit(pygame.transform.rotate(self.icon, self.rotation_angle),
                           (self.position.x + self._render_offset[0], self.position.y + self._render_offset[1]))
-
