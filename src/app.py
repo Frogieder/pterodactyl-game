@@ -1,6 +1,7 @@
 import pygame
 # from pygame.locals import *
 from src.player import Player
+from src.data_structures.colors import Color
 
 
 class App:
@@ -41,7 +42,7 @@ class App:
         self.sprites["player"].player_loop(dt)
 
     def on_render(self):
-        self._display_surf.fill((0, 255, 0))
+        self._display_surf.fill(Color.green)
         self._display_surf.blit(
             self.fps_counter.render(f"{self.clock.get_fps():.0f} FPS", True, (255, 255, 255)),
             (0, 0)
