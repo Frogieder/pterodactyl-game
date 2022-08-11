@@ -39,7 +39,7 @@ class App:
 
     def on_loop(self):
         dt = self.clock.tick(60) / 1000
-        self.sprites["player"].player_loop(dt)
+        self.sprites["player"].on_loop(dt)
 
     def on_render(self):
         self._display_surf.fill(Color.green)

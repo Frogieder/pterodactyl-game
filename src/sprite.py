@@ -6,7 +6,7 @@ class Sprite:
     def __init__(self, surface: pygame.Surface, icon_name: str = None, position: tuple | None = None,
                  size: tuple | None = None, anchor: str = "ul"):
         self.icon_name = "error.png"
-        self.icon = None
+        self.icon: pygame.Surface | None = None
         self.set_icon(icon_name)
         self.surface = surface
 

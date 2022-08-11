@@ -1,10 +1,11 @@
 from src.sprite import Sprite
 from src.data_structures.body_1d import Body1D
+from src.colliding_sprite import CollidingSprite
 import pygame
 from math import atan, pi
 
 
-class Player(Sprite):
+class Player(CollidingSprite):
     def __init__(self, surface: pygame.Surface, icon_name: str = None, position: tuple | None = None,
                  size: tuple | None = None, anchor: str = ""):
         super().__init__(surface=surface, icon_name=icon_name, position=position, size=size, anchor=anchor)
@@ -16,7 +17,7 @@ class Player(Sprite):
         self.y_body = Body1D(self.position.y, gravity=1200)
         self.rotation_angle = 0
 
-    def player_loop(self, dt: float):
+    def on_loop(self, dt: float):
         self.position.x += self.x_velocity * dt * self.direction
         if False in self.check_bounds_x():
             self.direction *= -1
@@ -29,6 +30,8 @@ class Player(Sprite):
             self.y_body.position = self.position.y
 
         self.rotation_angle = atan(self.y_body.velocity / self.x_velocity) / pi * 180 * self.direction * -1
+
+        super().on_loop()
 
     def check_bounds_x(self, fix_pos: bool = False):
         result = [True] * 2
